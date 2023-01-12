@@ -32,8 +32,6 @@
             new Phaser.Game(config);
 
             function preload(){
-                this.load.image('sky', 'assets/sky.png');
-                this.load.image('ground', 'assets/platform.png');
                 this.load.spritesheet('perso','assets/perso.png',
                 { frameWidth: 32, frameHeight: 48 });
                 this.load.image('fond', 'assets/background_2.png')
@@ -51,11 +49,11 @@
             function create(){
 
 
-                this.add.image(0, 0, 'fond'); 
+                //this.add.image(0, 0, 'fond'); 
                 const carteNiveau = this.add.tilemap("carte");
 
                 const tilset = carteNiveau.addTilesetImage(
-                    "tilesetOrdonne",
+                    "tileset",
                     "Phaser_tileset"
                 );
 

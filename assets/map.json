@@ -148,7 +148,7 @@
          "imageheight":1600,
          "imagewidth":1600,
          "margin":0,
-         "name":"tileset ordonn\u00e9",
+         "name":"tileset",
          "spacing":0,
          "tilecount":2500,
          "tileheight":32,
@@ -2165,14 +2165,14 @@
                      "objects":[
                             {
                              "class":"",
-                             "height":17.2765957446809,
+                             "height":17.2766,
                              "id":1,
                              "name":"",
                              "rotation":0,
                              "visible":true,
-                             "width":17.4468085106383,
-                             "x":9.78723404255319,
-                             "y":9.95744680851064
+                             "width":17.4468,
+                             "x":9.78723,
+                             "y":9.95745
                             }],
                      "opacity":1,
                      "type":"objectgroup",

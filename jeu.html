@@ -17,7 +17,7 @@
             
             var config = {
                 type: Phaser.AUTO,
-                width: 1000, height: 1000,
+                width: 600, height: 400,
                 physics: {
                     default: 'arcade',
                     arcade: {
@@ -25,8 +25,12 @@
                     debug: false
                     }
                 },
+                input:{gamepad:true},
 
                 scene: {preload: preload, create: create, update: update }
+
+               
+
             };
 
             new Phaser.Game(config);
@@ -39,20 +43,25 @@
                 this.load.tilemapTiledJSON("carte", "assets/map.json");
             }
 
-            var platforms;
-            var player;
+
+
+
+
+
+
             var cursors;
             var gameOver;
 
             gameOver=false;
+            sens=1;
 
             function create(){
 
 
-                //this.add.image(0, 0, 'fond'); 
-                const carteNiveau = this.add.tilemap("carte");
+                this.add.image(800, 800, 'fond'); 
+                const carteDuNiveau = this.add.tilemap("carte");
 
-                const tilset = carteNiveau.addTilesetImage(
+                const tileset = carteDuNiveau.addTilesetImage(
                     "tileset",
                     "Phaser_tileset"
                 );
@@ -71,25 +80,29 @@
 
 
 
-                calque_plateformes.setCollisionbyProperty({ estSolide: true});
+                calque_plateformes.setCollisionByProperty({EstSolide: true});
 
                 
 
 
-                player = this.physics.add.sprite(100, 450, 'perso');
-                player.setBounce(0.2);
-                player.setCollideWorldBounds(false);
+                this.player = this.physics.add.sprite(400, 770, 'perso');
+                this.player.setBounce(0.2);
+                this.player.setCollideWorldBounds(false);
+
+
+                this.physics.add.collider(this.player, calque_plateformes); 
+
 
                 // redimentionnement du monde avec les dimensions calculées via tiled
-                this.physics.world.setBounds(0, 0, 3200, 640);
+                this.physics.world.setBounds(0, 0, 1600, 1600);
                 //  ajout du champs de la caméra de taille identique à celle du monde
-                this.cameras.main.setBounds(0, 0, 3200, 640);
+                this.cameras.main.setBounds(0, 0, 1600, 1600);
                 // ancrage de la caméra sur le joueur
-                this.cameras.main.startFollow(player); 
+                this.cameras.main.startFollow(this.player); 
 
 
-                this.physics.add.collider(player, platforms);
-
+                this.onWall=false;
+                this.canJump = true;
 
                 this.anims.create({
                     key: 'left',
@@ -122,33 +135,110 @@
 
             function update(){
 
+
+
+                
+
                 if (gameOver){return;}
 
                 if (cursors.left.isDown){ //si la touche gauche est appuyée
-                    player.setVelocityX(-160); //alors vitesse négative en X
-                    player.anims.play('left', true); //et animation => gauche
+                    this.player.setVelocityX(-160); //alors vitesse négative en X
+                    this.player.anims.play('left', true); //et animation => gauche
                 }
                 else if (cursors.right.isDown){ //sinon si la touche droite est appuyée
-                    player.setVelocityX(160); //alors vitesse positive en X
-                    player.anims.play('right', true); //et animation => droite
+                    this.player.setVelocityX(160); //alors vitesse positive en X
+                    this.player.anims.play('right', true); //et animation => droite
 
                 }
                 else{ // sinon
-                    player.setVelocityX(0); //vitesse nulle
-                    player.anims.play('turn'); //animation fait face caméra
-                }
-                if (cursors.up.isDown && player.body.touching.down){
-                    //si touche haut appuyée ET que le perso touche le sol
-                    player.setVelocityY(-330); //alors vitesse verticale négative
-                    //(on saute)
+                    this.player.setVelocityX(0); //vitesse nulle
+                    this.player.anims.play('turn'); //animation fait face caméra
                 }
 
-                if (cursors.down.isDown && !player.body.touching.down){ //si la touche bas est appuyée en saut
-                    player.setVelocityY(450); 
+
+
+                if ((cursors.up.isDown && this.player.body.blocked.down) || (cursors.up.isDown && this.onWall==true)){
+                    //si touche haut appuyée ET que le perso touche le sol
+                    this.player.setVelocityY(-150); //alors vitesse verticale négative
+/*
+
+fonction pour faire un recul sur le wall jump, marche pas actuellement
+
+                      // is the hero on a wall?
+                    if(this.onWall){
+  
+                        this.player.body.velocity.x = 200 * this.sens
+
+                    }
+*/
+                    // hero can't jump anymore
+                    this.canJump = false;
+
+                    // hero is not on the wall anymore
+                    this.onWall = false;
+                    
+
+
+
+
+                }
+
+                if (cursors.down.isDown && !this.player.body.touching.down){ //si la touche bas est appuyée en saut
+                    this.player.setVelocityY(450); 
                 } 
 
+                if(this.player.body.blocked.down){
+ 
+                    // hero can jump
+                    this.canJump = true;
+
+                    // hero not on the wall
+                    this.onWall = false;
+                }
+
+                if(this.player.body.blocked.right && this.player.body.blocked.down){
+ 
+                    // horizontal flipping hero sprite
+                    this.sens = -1;
+                }
+
+                if(this.player.body.blocked.right && !this.player.body.blocked.down){
+
+                    this.onWall = true;
+                }
+
+                if(this.player.body.blocked.left && this.player.body.blocked.down){
+                    sens = 1;
+                }
+
+                if(this.player.body.blocked.left && !this.player.body.blocked.down){
+                    this.onWall = true;
+                    
+                }
 
 
+            }
+
+
+            function jump(){
+
+
+
+                this.player.setVelocityY(-150); //alors vitesse verticale négative
+
+                      // is the hero on a wall?
+                    if(this.onWall){
+ 
+
+                        this.player.body.velocity.x = 200 * this.player.scale.x;
+
+                    }
+
+                    // hero can't jump anymore
+                    this.canJump = false;
+
+                    // hero is not on the wall anymore
+                    this.onWall = false;
 
 
 

@@ -124,7 +124,8 @@
                 this.cameras.main.startFollow(this.player); 
 
 
-                this.onWall=false;
+                this.onWallDroit=false;
+                this.onWallGauche=false;
                 this.canJump = true;
 
                 this.anims.create({
@@ -154,7 +155,7 @@
 
 
 
-
+walljump =false;
 
             function update(){
 
@@ -166,35 +167,49 @@
 
                 if (gameOver){return;}
 
-                if (cursors.left.isDown ||(cursors.up.isDown && this.onWall==true && cursors.left.isDown)){ //si la touche gauche est appuyée
-                    if(this.onWall==true){
+                if (cursors.left.isDown && !this.onWallGauche && !walljump){ //si la touche gauche est appuyée
 
                         
+                    this.player.setVelocityX(-160); //alors vitesse négative en X
+                    this.player.anims.play('left', true); //et animation => gauche
+                    
 
 
+                }
 
-                        
-                        while(counter<2){
-                            updateCounter();
-                            this.player.setVelocityY(-150);
-                            this.player.setVelocityX(100); //alors vitesse positive en X
-                            this.player.anims.play('right', true); //et animation => droite
-                        }
-                    }
-                    else{
-                        this.player.setVelocityX(-160); //alors vitesse négative en X
-                        this.player.anims.play('left', true); //et animation => gauche
-                    }
-                    counter=0;
+                else if (this.onWallGauche && cursors.up.isDown){
+                    walljump=true;
+                    this.player.setVelocityY(-170);
+                    this.player.setVelocityX(100); //alors vitesse positive en X
+                    this.player.anims.play('right', true);
+                    this.onWallGauche=false;
+                    setTimeout(() => {
+                        walljump=false;
+                    }, 300);
 
 
                 }
                 
-                else if (cursors.right.isDown){ //sinon si la touche droite est appuyée
+                else if (cursors.right.isDown && !this.onWallGauche && !walljump){ //sinon si la touche droite est appuyée
                     this.player.setVelocityX(160); //alors vitesse positive en X
                     this.player.anims.play('right', true); //et animation => droite
                 }
-                else{ // sinon
+
+
+                else if (this.onWallDroit && cursors.up.isDown){
+                    walljump=true;
+                    this.player.setVelocityY(-170);
+                    this.player.setVelocityX(-100); //alors vitesse positive en X
+                    this.player.anims.play('left', true);
+                    this.onWallDroit=false;
+                    setTimeout(() => {
+                        walljump=false;
+                    }, 300);
+
+
+                }
+
+                else if (!walljump){ // sinon
                     this.player.setVelocityX(0); //vitesse nulle
                     this.player.anims.play('turn'); //animation fait face caméra
                 }
@@ -206,14 +221,14 @@
 
 
 
+
                 if (cursors.up.isDown && this.player.body.blocked.down){
                     //si touche haut appuyée ET que le perso touche le sol
-                    this.player.setVelocityY(-150); //alors vitesse verticale négative
-
-                    console.log(seconds)
+                    this.player.setVelocityY(-170); //alors vitesse verticale négative
 
 
 
+/*
                       // is the hero on a wall?
                     if(this.onWall){
                         if(this.player.body.blocked.right){
@@ -225,13 +240,14 @@
                         }
 
                     }
+                    */
 
                     // hero can't jump anymore
                     this.canJump = false;
 
                     // hero is not on the wall anymore
-                    this.onWall = false;
-                    
+                    this.onWallDroit = false;
+                    this.onWallGauche = false;
 
 
 
@@ -248,20 +264,21 @@
                     this.canJump = true;
 
                     // hero not on the wall
-                    this.onWall = false;
+                    this.onWallDroit = false;
+                    this.onWallGauche = false;
                 }
 
 
 
                 if(this.player.body.blocked.right && !this.player.body.blocked.down){
 
-                    this.onWall = true;
+                    this.onWallDroit = true;
                 }
 
 
 
                 if(this.player.body.blocked.left && !this.player.body.blocked.down){
-                    this.onWall = true;
+                    this.onWallGauche = true;
                     
                 }
 
@@ -273,12 +290,7 @@
 
 
 
-            function updateCounter() {
 
-                counter++;
-
-
-            }
 
 
 

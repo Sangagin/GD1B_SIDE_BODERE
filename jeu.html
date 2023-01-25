@@ -33,7 +33,7 @@
 
             };
 
-            new Phaser.Game(config);
+            game = new Phaser.Game(config);
 
             function preload(){
                 this.load.spritesheet('perso','assets/perso.png',
@@ -41,23 +41,29 @@
                 this.load.image('fond', 'assets/background_2.png')
                 this.load.image("Phaser_tileset", "assets/tilesetOrdonne.png");
                 this.load.tilemapTiledJSON("carte", "assets/map.json");
+
+
+
+
+
             }
 
 
 
 
 
-
-
+            const seconds = new Date().getTime();
             var cursors;
             var gameOver;
+            var counter =0;
 
             gameOver=false;
-            sens=1;
+            this.sens=1;
+            wallJump =true;
 
             function create(){
 
-
+                
                 this.add.image(800, 800, 'fond'); 
                 const carteDuNiveau = this.add.tilemap("carte");
 
@@ -85,10 +91,27 @@
                 
 
 
+
+
+     
+
+
+
+
+
+
+
+
+
+
+
+
+
                 this.player = this.physics.add.sprite(400, 770, 'perso');
                 this.player.setBounce(0.2);
                 this.player.setCollideWorldBounds(false);
-
+                this.player.test=false;
+               
 
                 this.physics.add.collider(this.player, calque_plateformes); 
 
@@ -101,7 +124,8 @@
                 this.cameras.main.startFollow(this.player); 
 
 
-                this.onWall=false;
+                this.onWallDroit=false;
+                this.onWallGauche=false;
                 this.canJump = true;
 
                 this.anims.create({
@@ -131,52 +155,95 @@
 
 
 
-
+walljump =false;
 
             function update(){
 
 
 
-                
+
+
+
 
                 if (gameOver){return;}
 
-                if (cursors.left.isDown){ //si la touche gauche est appuyée
+                if (cursors.left.isDown && !this.onWallGauche && !walljump){ //si la touche gauche est appuyée
+
+                        
                     this.player.setVelocityX(-160); //alors vitesse négative en X
                     this.player.anims.play('left', true); //et animation => gauche
-                }
-                else if (cursors.right.isDown){ //sinon si la touche droite est appuyée
-                    this.player.setVelocityX(160); //alors vitesse positive en X
-                    this.player.anims.play('right', true); //et animation => droite
+                    
+
 
                 }
-                else{ // sinon
+
+                else if (this.onWallGauche && cursors.up.isDown){
+                    walljump=true;
+                    this.player.setVelocityY(-170);
+                    this.player.setVelocityX(100); //alors vitesse positive en X
+                    this.player.anims.play('right', true);
+                    this.onWallGauche=false;
+                    setTimeout(() => {
+                        walljump=false;
+                    }, 300);
+
+
+                }
+                
+                else if (cursors.right.isDown && !this.onWallGauche && !walljump){ //sinon si la touche droite est appuyée
+                    this.player.setVelocityX(160); //alors vitesse positive en X
+                    this.player.anims.play('right', true); //et animation => droite
+                }
+
+
+                else if (this.onWallDroit && cursors.up.isDown){
+                    walljump=true;
+                    this.player.setVelocityY(-170);
+                    this.player.setVelocityX(-100); //alors vitesse positive en X
+                    this.player.anims.play('left', true);
+                    this.onWallDroit=false;
+                    setTimeout(() => {
+                        walljump=false;
+                    }, 300);
+
+
+                }
+
+                else if (!walljump){ // sinon
                     this.player.setVelocityX(0); //vitesse nulle
                     this.player.anims.play('turn'); //animation fait face caméra
                 }
 
 
 
-                if ((cursors.up.isDown && this.player.body.blocked.down) || (cursors.up.isDown && this.onWall==true)){
+
+
+                if (cursors.up.isDown && this.player.body.blocked.down){
                     //si touche haut appuyée ET que le perso touche le sol
-                    this.player.setVelocityY(-150); //alors vitesse verticale négative
+                    this.player.setVelocityY(-170); //alors vitesse verticale négative
+
+
+
 /*
-
-fonction pour faire un recul sur le wall jump, marche pas actuellement
-
                       // is the hero on a wall?
                     if(this.onWall){
-  
-                        this.player.body.velocity.x = 200 * this.sens
+                        if(this.player.body.blocked.right){
+                            this.player.setVelocityX(-200);
+                        }
+                        else if(this.player.body.blocked.left){
+                            this.player.setVelocityX(200);
+
+                        }
 
                     }
-*/
+                    */
+
                     // hero can't jump anymore
                     this.canJump = false;
 
                     // hero is not on the wall anymore
-                    this.onWall = false;
-                    
+                    this.onWallDroit = false;
+                    this.onWallGauche = false;
 
 
 
@@ -193,26 +260,21 @@ fonction pour faire un recul sur le wall jump, marche pas actuellement
                     this.canJump = true;
 
                     // hero not on the wall
-                    this.onWall = false;
+                    this.onWallDroit = false;
+                    this.onWallGauche = false;
                 }
 
-                if(this.player.body.blocked.right && this.player.body.blocked.down){
- 
-                    // horizontal flipping hero sprite
-                    this.sens = -1;
-                }
+
 
                 if(this.player.body.blocked.right && !this.player.body.blocked.down){
 
-                    this.onWall = true;
+                    this.onWallDroit = true;
                 }
 
-                if(this.player.body.blocked.left && this.player.body.blocked.down){
-                    sens = 1;
-                }
+
 
                 if(this.player.body.blocked.left && !this.player.body.blocked.down){
-                    this.onWall = true;
+                    this.onWallGauche = true;
                     
                 }
 
@@ -220,29 +282,11 @@ fonction pour faire un recul sur le wall jump, marche pas actuellement
             }
 
 
-            function jump(){
 
 
 
-                this.player.setVelocityY(-150); //alors vitesse verticale négative
-
-                      // is the hero on a wall?
-                    if(this.onWall){
- 
-
-                        this.player.body.velocity.x = 200 * this.player.scale.x;
-
-                    }
-
-                    // hero can't jump anymore
-                    this.canJump = false;
-
-                    // hero is not on the wall anymore
-                    this.onWall = false;
 
 
-
-            }
 
 
 

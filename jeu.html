@@ -6,6 +6,7 @@
         <script
             src="//cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js">
         </script>
+        <link rel="stylesheet" href="cssJeuPlateforme.css">
         <style type="text/css"> 
             body { margin: 0; }
         </style>
@@ -13,6 +14,11 @@
 
 
     <body>
+
+
+
+       
+
         <script type="text/javascript">
             
             var config = {
@@ -64,7 +70,7 @@
             function create(){
 
                 
-                this.add.image(800, 800, 'fond'); 
+                background=this.add.image(800, 800, 'fond'); 
                 const carteDuNiveau = this.add.tilemap("carte");
 
                 const tileset = carteDuNiveau.addTilesetImage(
@@ -104,8 +110,8 @@
 
 
 
-
-
+               // test.setScrollFactor(0)
+                //ça fonctionne, a rajouter image de barre de vie
 
                 this.player = this.physics.add.sprite(400, 770, 'perso');
                 this.player.setBounce(0.2);
@@ -148,7 +154,7 @@
                 
                 cursors = this.input.keyboard.createCursorKeys();
 
-
+                
             }
 
 
@@ -172,9 +178,8 @@ walljump =false;
                         
                     this.player.setVelocityX(-160); //alors vitesse négative en X
                     this.player.anims.play('left', true); //et animation => gauche
-                    
-
-
+                    //test.setActive(false).setVisible(false);
+                    //fonctionne aussi, a utiliser pour les power ups
                 }
 
                 else if (this.onWallGauche && cursors.up.isDown){
@@ -224,19 +229,6 @@ walljump =false;
 
 
 
-/*
-                      // is the hero on a wall?
-                    if(this.onWall){
-                        if(this.player.body.blocked.right){
-                            this.player.setVelocityX(-200);
-                        }
-                        else if(this.player.body.blocked.left){
-                            this.player.setVelocityX(200);
-
-                        }
-
-                    }
-                    */
 
                     // hero can't jump anymore
                     this.canJump = false;
@@ -297,5 +289,9 @@ walljump =false;
 
 
         </script>
+        <div id="myProgress">
+            <div id="myBar" style="color:blue;text-align:center;" ></div>
+        </div>
+
     </body>
 </html>

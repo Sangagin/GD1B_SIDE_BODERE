@@ -46,6 +46,7 @@
                 { frameWidth: 32, frameHeight: 48 });
                 this.load.image('fond', 'assets/background_2.png')
                 this.load.image("Phaser_tileset", "assets/tilesetOrdonne.png");
+                this.load.image("text1", "assets/fenetreTest.png");
                 this.load.tilemapTiledJSON("carte", "assets/map.json");
 
 
@@ -58,14 +59,15 @@
 
 
 
-            const seconds = new Date().getTime();
             var cursors;
             var gameOver;
             var counter =0;
-
             gameOver=false;
             this.sens=1;
             wallJump =true;
+            vieModifiee=false; //sert a rajouter des frames d'invincibilité et d'actualiser la barre de vie
+
+            
 
             function create(){
 
@@ -84,6 +86,9 @@
                     "plateformes",
                     tileset
                 );
+
+                
+
 
                 const calque_deco = carteDuNiveau.createLayer(
                     "décos",
@@ -115,11 +120,48 @@
 
                 this.player = this.physics.add.sprite(400, 770, 'perso');
                 this.player.setBounce(0.2);
-                this.player.setCollideWorldBounds(false);
-                this.player.test=false;
+                this.player.setCollideWorldBounds(true);
+                this.physics.add.collider(this.player, calque_plateformes); 
+
+
+                texte=this.add.image(this.player.x,this.player.y,'text1')
+                texte.visible=false;
+                //affichage des pics de niveau 1
+                this.spikes = this.physics.add.group({
+                    allowGravity: false,
+                    immovable: true
+                  });
+                this.spike1 = this.physics.add.sprite(500, 770, 'perso');
+                
+                this.spike1 = this.physics.add.sprite(550, 770, 'perso');
+                this.physics.add.collider(this.spike1, calque_plateformes); 
+                this.spike1.body.allowGravity=false;
+                this.spike1.body.immovable=true;
+                this.physics.add.collider(this.player, this.spike1,playerHit1,null,this); 
+
+                //affichage des pics de niveau 2
+                
+
+                //affichage des pics de niveau 3
+                
+
+                
+                //affichage de l'ennemi mobile
+
+
+                //affichage des pièces
+
+
                
 
-                this.physics.add.collider(this.player, calque_plateformes); 
+                
+
+                
+
+
+
+
+
 
 
                 // redimentionnement du monde avec les dimensions calculées via tiled
@@ -161,7 +203,7 @@
 
 
 
-walljump =false;
+            walljump =false;
 
             function update(){
 
@@ -195,7 +237,7 @@ walljump =false;
 
                 }
                 
-                else if (cursors.right.isDown && !this.onWallGauche && !walljump){ //sinon si la touche droite est appuyée
+                else if (cursors.right.isDown && !this.onWallDroit && !walljump){ //sinon si la touche droite est appuyée
                     this.player.setVelocityX(160); //alors vitesse positive en X
                     this.player.anims.play('right', true); //et animation => droite
                 }
@@ -218,9 +260,13 @@ walljump =false;
                     this.player.setVelocityX(0); //vitesse nulle
                     this.player.anims.play('turn'); //animation fait face caméra
                 }
+                setTimeout(() => {
+                    this.onWall=false;
+
+                }, 3000);
 
 
-
+                //lien anim https://stackabuse.com/phaser-3-and-tiled-building-a-platformer/
 
 
                 if (cursors.up.isDown && this.player.body.blocked.down){
@@ -272,6 +318,18 @@ walljump =false;
 
 
             }
+
+
+
+            function playerHit1(){
+                console.log("touché violet !")
+                
+
+            }
+
+
+      
+
 
 
 

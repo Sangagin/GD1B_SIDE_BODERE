@@ -25,7 +25,7 @@
 
         var config = {
             type: Phaser.AUTO,
-            width: 6000, height: 4000,
+            width: 600, height: 4000,
             physics: {
                 default: 'arcade',
                 arcade: {
@@ -61,6 +61,7 @@
             this.load.image("pics3_bas", "assets/pics3_bas.png");
             this.load.image("pics3_droite", "assets/pics3_droite.png");
             this.load.image("pics3_gauche", "assets/pics3_gauche.png");
+            this.load.image("ui", "assets/UI.png");
             this.load.tilemapTiledJSON("carte", "assets/map.json");
 
 
@@ -136,8 +137,7 @@
 
 
 
-
-            // test.setScrollFactor(0)
+            // 
             //ça fonctionne, a rajouter image de barre de vie
 
             this.player = this.physics.add.sprite(400, 770, 'perso');
@@ -150,6 +150,9 @@
             //test boite de message
             texte = this.add.image(this.player.x, this.player.y, 'text1')
             texte.visible = false;
+
+            ui = this.add.image(this.player.x-124, this.player.y, 'ui')
+            ui.setScrollFactor(0)
 
             //affichage des pics de niveau 1
             {
@@ -461,7 +464,7 @@
 
 
 
-
+            
 
 
             if (gameOver) { return; }

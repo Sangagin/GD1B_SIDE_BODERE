@@ -25,7 +25,7 @@
 
         var config = {
             type: Phaser.AUTO,
-            width: 600, height: 4000,
+            width: 600, height: 500,
             physics: {
                 default: 'arcade',
                 arcade: {
@@ -62,6 +62,8 @@
             this.load.image("pics3_droite", "assets/pics3_droite.png");
             this.load.image("pics3_gauche", "assets/pics3_gauche.png");
             this.load.image("ui", "assets/UI.png");
+            this.load.image("redbar", "assets/redbar.png");
+            this.load.image("serpent", "assets/serpent.png");
             this.load.tilemapTiledJSON("carte", "assets/map.json");
 
 
@@ -70,7 +72,7 @@
 
         }
 
-
+//setTint
 
 
 
@@ -81,7 +83,8 @@
         this.sens = 1;
         wallJump = true;
         vieModifiee = false; //sert a rajouter des frames d'invincibilité et d'actualiser la barre de vie
-
+        vie=10;
+        ennemiVivant=true;
 
 
         function create() {
@@ -151,8 +154,20 @@
             texte = this.add.image(this.player.x, this.player.y, 'text1')
             texte.visible = false;
 
-            ui = this.add.image(this.player.x-124, this.player.y, 'ui')
-            ui.setScrollFactor(0)
+            //affichage UI 
+            ui = this.add.image(this.player.x-128-110, 62, 'ui')
+            ui.setScrollFactor(0);
+            ui.setScale(0.35);
+            ui.depth=1;
+
+            redbar = this.add.image(this.player.x-350, 36, 'redbar')
+            redbar.setScrollFactor(0);
+            
+
+
+
+
+
 
             //affichage des pics de niveau 1
             {
@@ -403,6 +418,14 @@
             
             //affichage de l'ennemi mobile
 
+            this.serpent = this.physics.add.sprite(400, 770, 'serpent');
+            
+            this.physics.add.collider(this.serpent, calque_plateformes);
+            this.serpent.setScale(0.04);
+            this.serpent.setVelocityX(50);
+            
+
+
 
             //affichage des pièces
 
@@ -463,19 +486,42 @@
         function update() {
 
 
+            if(ennemiVivant){
+                if(this.serpent.body.blocked.left){
+                    this.serpent.setVelocityX(50);
+                    
+                    console.log("bong")
+                    
 
+                }
+
+                if(this.serpent.body.blocked.right){
+                    this.serpent.setVelocityX(-50);
+                    console.log("bing");
+                }
+            }
             
 
+            if (gameOver) { 
+                //affichage message game over 
+                texte.visible = true;
+                texte.immovable = true;
+                texte.x=this.player.x;
+                texte.y=this.player.y;
+                texte.depth=2;
 
-            if (gameOver) { return; }
+                return; 
+            }
 
             if (cursors.left.isDown && !this.onWallGauche && !walljump) { //si la touche gauche est appuyée
 
 
                 this.player.setVelocityX(-160); //alors vitesse négative en X
                 this.player.anims.play('left', true); //et animation => gauche
+
                 //test.setActive(false).setVisible(false);
                 //fonctionne aussi, a utiliser pour les power ups
+
             }
 
             else if (this.onWallGauche && cursors.up.isDown) {
@@ -522,6 +568,10 @@
 
             //lien anim https://stackabuse.com/phaser-3-and-tiled-building-a-platformer/
 
+//https://gamedevacademy.org/phaser-texture-atlas-tutorial-how-to-make-awesome-sprites-from-scratch/
+
+//https://www.codeandweb.com/texturepacker/tutorials/creating-spritesheets-for-phaser-with-texturepacker#:~:text=What%20you%20are%20going%20to%20learn%201%20Creating,this%20new%20function%20to%20create%20the%20scene%3A%20
+//https://www.youtube.com/watch?time_continue=1&v=uMBfAhp244w&embeds_euri=https%3A%2F%2Fwww.bing.com%2F&embeds_origin=https%3A%2F%2Fwww.bing.com&source_ve_path=MjM4NTE&feature=emb_title
 
             if (cursors.up.isDown && this.player.body.blocked.down) {
                 //si touche haut appuyée ET que le perso touche le sol
@@ -576,8 +626,27 @@
 
 
         function playerHit1() {
-            console.log("touché violet !")
+            if(!vieModifiee){
+                vie--
+                console.log(vie)
+            
+                redbar.x=redbar.x-18;
 
+                if(vie<=0){
+                    console.log("mort")
+
+
+                    gameOver=true;
+                }
+
+
+                //inserer anim frames invincibilité
+                vieModifiee = true;
+                setTimeout(() => {
+                    vieModifiee = false;
+    
+                }, 500);
+            }
 
         }
 

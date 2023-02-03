@@ -33,7 +33,7 @@
 
         var config = {
             type: Phaser.AUTO,
-            //width: 1600, height: 1600,
+           // width: 1600, height: 1600,
             width: 600, height: 500,
             physics: {
                 default: 'arcade',
@@ -54,7 +54,7 @@
 
         function preload() {
             this.load.spritesheet('perso', 'assets/perso.png',
-                { frameWidth: 32, frameHeight: 48 });
+                { frameWidth: 32, frameHeight: 62 });
             this.load.spritesheet('piece', 'assets/piece.png',
                 { frameWidth: 200, frameHeight: 200 });
             this.load.image('fond', 'assets/background_2.png')
@@ -170,6 +170,7 @@
 
             this.player = this.physics.add.sprite(400, 770, 'perso');
             this.player.setBounce(0.2);
+            this.player.setScale(0.8);
             this.player.setCollideWorldBounds(true);
             this.physics.add.collider(this.player, calque_plateformes);
 
@@ -214,7 +215,7 @@
             //test boites de message
 
             texte1 = this.add.image(this.piece1.x - 2, this.piece1.y + 5, 'text1')
-            texte1.depth = 4
+            texte1.depth = 5
 
             texte1.visible = false;
 
@@ -436,7 +437,7 @@
                 this.spike3_9 = this.physics.add.sprite(816 - 160, 208 + 128 + 96, 'pics3_bas');
                 this.spike3_10 = this.physics.add.sprite(816 - 192, 208 + 128 + 96, 'pics3_bas');
                 this.spike3_11 = this.physics.add.sprite(816 - 192 - 32, 208 + 128 + 96, 'pics3_bas');
-                this.spike3_12 = this.physics.add.sprite(816 - 192 - 64, 208 + 128 + 96, 'pics3_bas');
+               // this.spike3_12 = this.physics.add.sprite(816 - 192 - 64, 208 + 128 + 96, 'pics3_bas');
                 this.spike3_13 = this.physics.add.sprite(812 - 192 - 32 - 124 - 32, 208 + 128 + 96, 'pics3_bas');
                 //this.spike3_14 = this.physics.add.sprite(812-192-64-124-32, 208 + 128 +96, 'pics3_bas');
                 this.spike3_15 = this.physics.add.sprite(1136-96, 208 + 128 +96, 'pics3_gauche');
@@ -465,7 +466,7 @@
                 this.spike3_9.body.allowGravity = false;
                 this.spike3_10.body.allowGravity = false;
                 this.spike3_11.body.allowGravity = false;
-                this.spike3_12.body.allowGravity = false;
+                //this.spike3_12.body.allowGravity = false;
                 this.spike3_13.body.allowGravity = false;
                // this.spike3_14.body.allowGravity = false;
                 this.spike3_15.body.allowGravity = false;
@@ -492,7 +493,7 @@
                 this.spike3_9.body.immovable = true;
                 this.spike3_10.body.immovable = true;
                 this.spike3_11.body.immovable = true;
-                this.spike3_12.body.immovable = true;
+             //   this.spike3_12.body.immovable = true;
                 this.spike3_13.body.immovable = true;
                // this.spike3_14.body.immovable = true;
                 this.spike3_15.body.immovable = true;
@@ -519,7 +520,7 @@
                 this.physics.add.collider(this.player, this.spike3_9, playerHit3);
                 this.physics.add.collider(this.player, this.spike3_10, playerHit3);
                 this.physics.add.collider(this.player, this.spike3_11, playerHit3);
-                this.physics.add.collider(this.player, this.spike3_12, playerHit3);
+             //   this.physics.add.collider(this.player, this.spike3_12, playerHit3);
                 this.physics.add.collider(this.player, this.spike3_13, playerHit3);
              //   this.physics.add.collider(this.player, this.spike3_14, playerHit1);
                 this.physics.add.collider(this.player, this.spike3_15, playerHit3);
@@ -818,7 +819,7 @@
 
             if (cursors.up.isDown && this.player.body.blocked.down && isPlayerMovable) {
                 //si touche haut appuyée ET que le perso touche le sol
-                this.player.setVelocityY(-300); //alors vitesse verticale négative
+                this.player.setVelocityY(-170); //alors vitesse verticale négative
 
 
 

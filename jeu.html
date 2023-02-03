@@ -23,6 +23,14 @@
 
     <script type="text/javascript">
 
+
+
+
+
+
+
+
+
         var config = {
             type: Phaser.AUTO,
             width: 600, height: 500,
@@ -46,9 +54,14 @@
         function preload() {
             this.load.spritesheet('perso', 'assets/perso.png',
                 { frameWidth: 32, frameHeight: 48 });
+            this.load.spritesheet('piece', 'assets/piece.png',
+                { frameWidth: 200, frameHeight: 200 });
             this.load.image('fond', 'assets/background_2.png')
             this.load.image("Phaser_tileset", "assets/tilesetOrdonne.png");
-            this.load.image("text1", "assets/fenetreTest.png");
+            this.load.image("text1", "assets/texte1.png");
+            this.load.image("text2", "assets/texte2.png");
+            this.load.image("text3", "assets/texte3.png");
+            this.load.image("textG", "assets/texteG.png");
             this.load.image("pics1", "assets/pics1.png");
             this.load.image("pics1_bas", "assets/pics1_bas.png");
             this.load.image("pics1_droite", "assets/pics1_droite.png");
@@ -64,6 +77,7 @@
             this.load.image("ui", "assets/UI.png");
             this.load.image("redbar", "assets/redbar.png");
             this.load.image("serpent", "assets/serpent.png");
+            this.load.image("fouet", "assets/icone_fouet.png");
             this.load.tilemapTiledJSON("carte", "assets/map.json");
 
 
@@ -72,7 +86,7 @@
 
         }
 
-//setTint
+        //setTint
 
 
 
@@ -83,8 +97,13 @@
         this.sens = 1;
         wallJump = true;
         vieModifiee = false; //sert a rajouter des frames d'invincibilité et d'actualiser la barre de vie
-        vie=10;
-        ennemiVivant=true;
+        vie = 10;
+        ennemiVivant = true;
+        powerup1 = false;
+        powerup2 = false;
+        powerup3 = false;
+        isPlayerMovable = true
+        counterPiece = 0
 
 
         function create() {
@@ -150,21 +169,61 @@
 
 
 
-            //test boite de message
-            texte = this.add.image(this.player.x, this.player.y, 'text1')
-            texte.visible = false;
+
 
             //affichage UI 
-            ui = this.add.image(this.player.x-128-110, 62, 'ui')
+            ui = this.add.image(this.player.x - 128 - 110, 62, 'ui')
             ui.setScrollFactor(0);
             ui.setScale(0.35);
-            ui.depth=1;
+            ui.depth = 1;
 
-            redbar = this.add.image(this.player.x-350, 36, 'redbar')
+            redbar = this.add.image(this.player.x - 350, 36, 'redbar')
             redbar.setScrollFactor(0);
-            
 
 
+            //ajout des pieces
+
+            this.piece1 = this.physics.add.sprite(335, 1020, 'piece');
+            this.piece1.body.allowGravity = false;
+            this.physics.add.collider(this.player, this.piece1, playerHitPiece1);
+            this.physics.add.collider(this.piece1, calque_plateformes);
+            this.piece1.setScale(0.15);
+
+
+
+            this.piece2 = this.physics.add.sprite(112 + 64 + 32, 654 + 32, 'piece');
+            this.piece2.body.allowGravity = false;
+            this.physics.add.collider(this.player, this.piece2, playerHitPiece2);
+            this.physics.add.collider(this.piece2, calque_plateformes);
+            this.piece2.setScale(0.15);
+
+
+            this.piece3 = this.physics.add.sprite(785, 530, 'piece');
+            this.piece3.body.allowGravity = false;
+            this.physics.add.collider(this.player, this.piece3, playerHitPiece3);
+            this.physics.add.collider(this.piece3, calque_plateformes);
+            this.piece3.setScale(0.15);
+
+
+            //test boites de message
+
+            texte1 = this.add.image(this.piece1.x - 2, this.piece1.y + 5, 'text1')
+            texte1.depth = 3
+
+            texte1.visible = false;
+
+            texte2 = this.add.image(this.piece2.x - 2, this.piece2.y + 5, 'text2')
+            texte2.depth = 3
+            texte2.visible = false;
+
+            texte3 = this.add.image(this.piece3.x - 2, this.piece3.y + 5, 'text3')
+            texte3.depth = 3
+
+            texte3.visible = false;
+
+
+            texteG = this.add.image(this.piece1.x - 2, this.piece1.y + 5, 'textG')
+            texteG.visible = false;
 
 
 
@@ -282,7 +341,7 @@
                 this.spike2_5 = this.physics.add.sprite(592 - 320 + 64 + 64, 208 + 64, 'pics2_gauche');
                 this.spike2_6 = this.physics.add.sprite(592 + 96, 208 - 32, 'pics2_gauche');
                 this.spike2_7 = this.physics.add.sprite(592 + 96, 208 - 64, 'pics2_gauche');
-                this.spike2_8 = this.physics.add.sprite(1136, 208 - 64 - 64, 'pics2_gauche');
+                //  this.spike2_8 = this.physics.add.sprite(1136, 208 - 64 - 64, 'pics2_gauche');
                 this.spike2_9 = this.physics.add.sprite(1136 - 32, 208 + 32, 'pics2_droite');
                 this.spike2_10 = this.physics.add.sprite(1136 - 128 - 96, 208 + 32, 'pics2_droite');
                 this.spike2_11 = this.physics.add.sprite(592, 208, 'pics2_droite');
@@ -300,7 +359,7 @@
                 this.spike2_5.body.allowGravity = false;
                 this.spike2_6.body.allowGravity = false;
                 this.spike2_7.body.allowGravity = false;
-                this.spike2_8.body.allowGravity = false;
+                //this.spike2_8.body.allowGravity = false;
                 this.spike2_9.body.allowGravity = false;
                 this.spike2_10.body.allowGravity = false;
                 this.spike2_11.body.allowGravity = false;
@@ -317,7 +376,7 @@
                 this.spike2_5.body.immovable = true;
                 this.spike2_6.body.immovable = true;
                 this.spike2_7.body.immovable = true;
-                this.spike2_8.body.immovable = true;
+                // this.spike2_8.body.immovable = true;
                 this.spike2_9.body.immovable = true;
                 this.spike2_10.body.immovable = true;
                 this.spike2_11.body.immovable = true;
@@ -328,22 +387,22 @@
                 this.spike2_16.body.immovable = true;
 
 
-                this.physics.add.collider(this.player, this.spike2_1, playerHit1);
-                this.physics.add.collider(this.player, this.spike2_2, playerHit1);
-                this.physics.add.collider(this.player, this.spike2_3, playerHit1);
-                this.physics.add.collider(this.player, this.spike2_4, playerHit1);
-                this.physics.add.collider(this.player, this.spike2_5, playerHit1);
-                this.physics.add.collider(this.player, this.spike2_6, playerHit1);
-                this.physics.add.collider(this.player, this.spike2_7, playerHit1);
-                this.physics.add.collider(this.player, this.spike2_8, playerHit1);
-                this.physics.add.collider(this.player, this.spike2_9, playerHit1);
-                this.physics.add.collider(this.player, this.spike2_10, playerHit1);
-                this.physics.add.collider(this.player, this.spike2_11, playerHit1);
-                this.physics.add.collider(this.player, this.spike2_12, playerHit1);
-                this.physics.add.collider(this.player, this.spike2_13, playerHit1);
-                this.physics.add.collider(this.player, this.spike2_14, playerHit1);
-                this.physics.add.collider(this.player, this.spike2_15, playerHit1);
-                this.physics.add.collider(this.player, this.spike2_16, playerHit1);
+                this.physics.add.collider(this.player, this.spike2_1, playerHit2);
+                this.physics.add.collider(this.player, this.spike2_2, playerHit2);
+                this.physics.add.collider(this.player, this.spike2_3, playerHit2);
+                this.physics.add.collider(this.player, this.spike2_4, playerHit2);
+                this.physics.add.collider(this.player, this.spike2_5, playerHit2);
+                this.physics.add.collider(this.player, this.spike2_6, playerHit2);
+                this.physics.add.collider(this.player, this.spike2_7, playerHit2);
+                //  this.physics.add.collider(this.player, this.spike2_8, playerHit1);
+                this.physics.add.collider(this.player, this.spike2_9, playerHit2);
+                this.physics.add.collider(this.player, this.spike2_10, playerHit2);
+                this.physics.add.collider(this.player, this.spike2_11, playerHit2);
+                this.physics.add.collider(this.player, this.spike2_12, playerHit2);
+                this.physics.add.collider(this.player, this.spike2_13, playerHit2);
+                this.physics.add.collider(this.player, this.spike2_14, playerHit2);
+                this.physics.add.collider(this.player, this.spike2_15, playerHit2);
+                this.physics.add.collider(this.player, this.spike2_16, playerHit2);
 
 
 
@@ -353,20 +412,20 @@
 
             {
 
-                this.spike3_1 = this.physics.add.sprite(1136 - 96, 208 + 128 +64, 'pics3_bas');
-                this.spike3_2 = this.physics.add.sprite(1136 - 96 -32, 208 + 128 +64, 'pics3_bas');
-                this.spike3_3 = this.physics.add.sprite(1136 - 96 -32-32, 208 + 128 +64, 'pics3_bas');
-                this.spike3_4 = this.physics.add.sprite(816, 208 + 128 +96, 'pics3_bas');
-                this.spike3_5 = this.physics.add.sprite(816 -32, 208 + 128 +96, 'pics3_bas');
-                this.spike3_6 = this.physics.add.sprite(816-64, 208 + 128 +96, 'pics3_bas');                
-                this.spike3_7 = this.physics.add.sprite(816-96, 208 + 128 +96, 'pics3_bas');
-                this.spike3_8 = this.physics.add.sprite(816 -128, 208 + 128 +96, 'pics3_bas');
-                this.spike3_9 = this.physics.add.sprite(816-160, 208 + 128 +96, 'pics3_bas');                
-                this.spike3_10 = this.physics.add.sprite(816-192, 208 + 128 +96, 'pics3_bas');
-                this.spike3_11 = this.physics.add.sprite(816 -192-32, 208 + 128 +96, 'pics3_bas');
-                this.spike3_12 = this.physics.add.sprite(816-192-64, 208 + 128 +96, 'pics3_bas');
-                this.spike3_13 = this.physics.add.sprite(812 -192-32-124-32, 208 + 128 +96, 'pics3_bas');
-                this.spike3_14 = this.physics.add.sprite(812-192-64-124-32, 208 + 128 +96, 'pics3_bas');
+                this.spike3_1 = this.physics.add.sprite(1136 - 96, 208 + 128 + 64, 'pics3_bas');
+                this.spike3_2 = this.physics.add.sprite(1136 - 96 - 32, 208 + 128 + 64, 'pics3_bas');
+                this.spike3_3 = this.physics.add.sprite(1136 - 96 - 32 - 32, 208 + 128 + 64, 'pics3_bas');
+                this.spike3_4 = this.physics.add.sprite(816, 208 + 128 + 96, 'pics3_bas');
+                this.spike3_5 = this.physics.add.sprite(816 - 32, 208 + 128 + 96, 'pics3_bas');
+                this.spike3_6 = this.physics.add.sprite(816 - 64, 208 + 128 + 96, 'pics3_bas');
+                this.spike3_7 = this.physics.add.sprite(816 - 96, 208 + 128 + 96, 'pics3_bas');
+                this.spike3_8 = this.physics.add.sprite(816 - 128, 208 + 128 + 96, 'pics3_bas');
+                this.spike3_9 = this.physics.add.sprite(816 - 160, 208 + 128 + 96, 'pics3_bas');
+                this.spike3_10 = this.physics.add.sprite(816 - 192, 208 + 128 + 96, 'pics3_bas');
+                this.spike3_11 = this.physics.add.sprite(816 - 192 - 32, 208 + 128 + 96, 'pics3_bas');
+                this.spike3_12 = this.physics.add.sprite(816 - 192 - 64, 208 + 128 + 96, 'pics3_bas');
+                this.spike3_13 = this.physics.add.sprite(812 - 192 - 32 - 124 - 32, 208 + 128 + 96, 'pics3_bas');
+                //  this.spike3_14 = this.physics.add.sprite(812-192-64-124-32, 208 + 128 +96, 'pics3_bas');
 
                 this.spike3_1.body.allowGravity = false;
                 this.spike3_2.body.allowGravity = false;
@@ -381,7 +440,7 @@
                 this.spike3_11.body.allowGravity = false;
                 this.spike3_12.body.allowGravity = false;
                 this.spike3_13.body.allowGravity = false;
-                this.spike3_14.body.allowGravity = false;
+                //this.spike3_14.body.allowGravity = false;
 
                 this.spike3_1.body.immovable = true;
                 this.spike3_2.body.immovable = true;
@@ -396,38 +455,45 @@
                 this.spike3_11.body.immovable = true;
                 this.spike3_12.body.immovable = true;
                 this.spike3_13.body.immovable = true;
-                this.spike3_14.body.immovable = true;
+                // this.spike3_14.body.immovable = true;
 
-                this.physics.add.collider(this.player, this.spike3_1, playerHit1);
-                this.physics.add.collider(this.player, this.spike3_2, playerHit1);
-                this.physics.add.collider(this.player, this.spike3_3, playerHit1);
-                this.physics.add.collider(this.player, this.spike3_4, playerHit1);
-                this.physics.add.collider(this.player, this.spike3_5, playerHit1);
-                this.physics.add.collider(this.player, this.spike3_6, playerHit1);
-                this.physics.add.collider(this.player, this.spike3_7, playerHit1);
-                this.physics.add.collider(this.player, this.spike3_8, playerHit1);
-                this.physics.add.collider(this.player, this.spike3_9, playerHit1);
-                this.physics.add.collider(this.player, this.spike3_10, playerHit1);
-                this.physics.add.collider(this.player, this.spike3_11, playerHit1);
-                this.physics.add.collider(this.player, this.spike3_12, playerHit1);
-                this.physics.add.collider(this.player, this.spike3_13, playerHit1);
-                this.physics.add.collider(this.player, this.spike3_14, playerHit1);
+                this.physics.add.collider(this.player, this.spike3_1, playerHit3);
+                this.physics.add.collider(this.player, this.spike3_2, playerHit3);
+                this.physics.add.collider(this.player, this.spike3_3, playerHit3);
+                this.physics.add.collider(this.player, this.spike3_4, playerHit3);
+                this.physics.add.collider(this.player, this.spike3_5, playerHit3);
+                this.physics.add.collider(this.player, this.spike3_6, playerHit3);
+                this.physics.add.collider(this.player, this.spike3_7, playerHit3);
+                this.physics.add.collider(this.player, this.spike3_8, playerHit3);
+                this.physics.add.collider(this.player, this.spike3_9, playerHit3);
+                this.physics.add.collider(this.player, this.spike3_10, playerHit3);
+                this.physics.add.collider(this.player, this.spike3_11, playerHit3);
+                this.physics.add.collider(this.player, this.spike3_12, playerHit3);
+                this.physics.add.collider(this.player, this.spike3_13, playerHit3);
+                //  this.physics.add.collider(this.player, this.spike3_14, playerHit1);
             }
 
             //manque les pics de coté
-            
+
             //affichage de l'ennemi mobile
 
             this.serpent = this.physics.add.sprite(400, 770, 'serpent');
-            
+
             this.physics.add.collider(this.serpent, calque_plateformes);
             this.serpent.setScale(0.04);
             this.serpent.setVelocityX(50);
-            
+
+            //            this.physics.add.collider(this.player, this.serpent, playerHitPiece1);
 
 
+            //affichage des tirs (le perso ne sait pas se servir d'un fouet donc elle le lance)
+            this.fouet = this.physics.add.sprite(32, 8, 'fouet');
+            this.physics.add.collider(this.fouet, calque_plateformes);
+            this.fouet.setScale(0.1);
+            this.fouet.body.allowGravity=false;    
+            this.fouet.setVelocityX(150);
 
-            //affichage des pièces
+
 
 
 
@@ -472,6 +538,18 @@
                 repeat: -1
             });
 
+
+
+            //anim pieces
+            this.anims.create({
+                key: 'rota',
+                frames: this.anims.generateFrameNumbers('piece', { start: 0, end: 3 }),
+                frameRate: 5,
+                repeat: -1
+            });
+
+
+
             cursors = this.input.keyboard.createCursorKeys();
 
 
@@ -486,45 +564,81 @@
         function update() {
 
 
-            if(ennemiVivant){
-                if(this.serpent.body.blocked.left){
+            this.piece1.anims.play('rota', true);
+            this.piece2.anims.play('rota', true);
+            this.piece3.anims.play('rota', true);
+
+            if (powerup1) {
+                this.piece1.setActive(false).setVisible(false);
+
+            }
+            if (powerup2) {
+                this.piece2.setActive(false).setVisible(false);
+
+            }
+            if (powerup3) {
+                this.piece3.setActive(false).setVisible(false);
+
+            }
+
+
+
+
+
+            if (ennemiVivant) {
+                if (this.serpent.body.blocked.left) {
                     this.serpent.setVelocityX(50);
-                    
                     console.log("bong")
-                    
 
                 }
 
-                if(this.serpent.body.blocked.right){
+                if (this.serpent.body.blocked.right) {
                     this.serpent.setVelocityX(-50);
                     console.log("bing");
                 }
             }
-            
 
-            if (gameOver) { 
+
+            if (gameOver) {
                 //affichage message game over 
-                texte.visible = true;
-                texte.immovable = true;
-                texte.x=this.player.x;
-                texte.y=this.player.y;
-                texte.depth=2;
+                texteG.visible = true;
+                texteG.immovable = true;
+                texteG.x = this.player.x;
+                texteG.y = this.player.y;
+                texteG.depth = 9999;
 
-                return; 
+                return;
             }
 
-            if (cursors.left.isDown && !this.onWallGauche && !walljump) { //si la touche gauche est appuyée
+            
 
+
+
+            this.input.on('pointerdown', (pointer) => {
+                this.fouet.x=this.player.x
+                this.fouet.y=this.player.y
+                if(pointer.x<this.player.x){
+                    this.fouet.setVelocityX(-150)
+
+                }
+                else{
+                    this.fouet.setVelocityX(150)
+
+                }
+                console.log("test")
+            });
+
+
+            if (cursors.left.isDown && !this.onWallGauche && !walljump && isPlayerMovable) { //si la touche gauche est appuyée
 
                 this.player.setVelocityX(-160); //alors vitesse négative en X
                 this.player.anims.play('left', true); //et animation => gauche
 
-                //test.setActive(false).setVisible(false);
-                //fonctionne aussi, a utiliser pour les power ups
+
 
             }
 
-            else if (this.onWallGauche && cursors.up.isDown) {
+            else if (this.onWallGauche && cursors.up.isDown && isPlayerMovable) {
                 walljump = true;
                 this.player.setVelocityY(-170);
                 this.player.setVelocityX(100); //alors vitesse positive en X
@@ -537,13 +651,13 @@
 
             }
 
-            else if (cursors.right.isDown && !this.onWallDroit && !walljump) { //sinon si la touche droite est appuyée
+            else if (cursors.right.isDown && !this.onWallDroit && !walljump && isPlayerMovable) { //sinon si la touche droite est appuyée
                 this.player.setVelocityX(160); //alors vitesse positive en X
                 this.player.anims.play('right', true); //et animation => droite
             }
 
 
-            else if (this.onWallDroit && cursors.up.isDown) {
+            else if (this.onWallDroit && cursors.up.isDown && isPlayerMovable) {
                 walljump = true;
                 this.player.setVelocityY(-170);
                 this.player.setVelocityX(-100); //alors vitesse positive en X
@@ -556,7 +670,7 @@
 
             }
 
-            else if (!walljump) { // sinon
+            else if (!walljump && isPlayerMovable) { // sinon
                 this.player.setVelocityX(0); //vitesse nulle
                 this.player.anims.play('turn'); //animation fait face caméra
             }
@@ -568,12 +682,12 @@
 
             //lien anim https://stackabuse.com/phaser-3-and-tiled-building-a-platformer/
 
-//https://gamedevacademy.org/phaser-texture-atlas-tutorial-how-to-make-awesome-sprites-from-scratch/
+            //https://gamedevacademy.org/phaser-texture-atlas-tutorial-how-to-make-awesome-sprites-from-scratch/
 
-//https://www.codeandweb.com/texturepacker/tutorials/creating-spritesheets-for-phaser-with-texturepacker#:~:text=What%20you%20are%20going%20to%20learn%201%20Creating,this%20new%20function%20to%20create%20the%20scene%3A%20
-//https://www.youtube.com/watch?time_continue=1&v=uMBfAhp244w&embeds_euri=https%3A%2F%2Fwww.bing.com%2F&embeds_origin=https%3A%2F%2Fwww.bing.com&source_ve_path=MjM4NTE&feature=emb_title
+            //https://www.codeandweb.com/texturepacker/tutorials/creating-spritesheets-for-phaser-with-texturepacker#:~:text=What%20you%20are%20going%20to%20learn%201%20Creating,this%20new%20function%20to%20create%20the%20scene%3A%20
+            //https://www.youtube.com/watch?time_continue=1&v=uMBfAhp244w&embeds_euri=https%3A%2F%2Fwww.bing.com%2F&embeds_origin=https%3A%2F%2Fwww.bing.com&source_ve_path=MjM4NTE&feature=emb_title
 
-            if (cursors.up.isDown && this.player.body.blocked.down) {
+            if (cursors.up.isDown && this.player.body.blocked.down && isPlayerMovable) {
                 //si touche haut appuyée ET que le perso touche le sol
                 this.player.setVelocityY(-170); //alors vitesse verticale négative
 
@@ -592,11 +706,11 @@
 
             }
 
-            if (cursors.down.isDown && !this.player.body.touching.down) { //si la touche bas est appuyée en saut
+            if (cursors.down.isDown && !this.player.body.touching.down && isPlayerMovable) { //si la touche bas est appuyée en saut
                 this.player.setVelocityY(450);
             }
 
-            if (this.player.body.blocked.down) {
+            if (this.player.body.blocked.down && isPlayerMovable) {
 
                 // hero can jump
                 this.canJump = true;
@@ -608,14 +722,14 @@
 
 
 
-            if (this.player.body.blocked.right && !this.player.body.blocked.down) {
+            if (this.player.body.blocked.right && !this.player.body.blocked.down && isPlayerMovable) {
 
                 this.onWallDroit = true;
             }
 
 
 
-            if (this.player.body.blocked.left && !this.player.body.blocked.down) {
+            if (this.player.body.blocked.left && !this.player.body.blocked.down && isPlayerMovable) {
                 this.onWallGauche = true;
 
             }
@@ -626,17 +740,17 @@
 
 
         function playerHit1() {
-            if(!vieModifiee){
+            if (!vieModifiee) {
                 vie--
                 console.log(vie)
-            
-                redbar.x=redbar.x-18;
 
-                if(vie<=0){
+                redbar.x = redbar.x - 21;
+
+                if (vie <= 0) {
                     console.log("mort")
 
 
-                    gameOver=true;
+                    gameOver = true;
                 }
 
 
@@ -644,21 +758,129 @@
                 vieModifiee = true;
                 setTimeout(() => {
                     vieModifiee = false;
-    
-                }, 500);
+
+                }, 1000);
             }
 
         }
 
 
+        function playerHit2() {
+            if (!vieModifiee) {
+                vie = vie - 2
+                console.log(vie)
+
+                redbar.x = redbar.x - 42;
+
+                if (vie <= 0) {
+                    console.log("mort")
 
 
+                    gameOver = true;
+                }
 
 
+                //inserer anim frames invincibilité
+                vieModifiee = true;
+                setTimeout(() => {
+                    vieModifiee = false;
+
+                }, 1000);
+            }
+
+        }
+
+        function playerHit3() {
+            if (!vieModifiee) {
+                vie = vie - 3
+                console.log(vie)
+
+                redbar.x = redbar.x - 63;
+
+                if (vie <= 0) {
+                    console.log("mort")
 
 
+                    gameOver = true;
+                }
 
 
+                //inserer anim frames invincibilité
+                vieModifiee = true;
+                setTimeout(() => {
+                    vieModifiee = false;
+
+                }, 1000);
+            }
+
+        }
+
+        function playerHitS() {
+            if (!vieModifiee) {
+                vie = vie - 2
+                console.log(vie)
+                this.serpent.setVelocityX(50);
+
+                redbar.x = redbar.x - 42;
+
+                if (vie <= 0) {
+                    console.log("mort")
+
+
+                    gameOver = true;
+                }
+
+
+                //inserer anim frames invincibilité
+                vieModifiee = true;
+                setTimeout(() => {
+                    vieModifiee = false;
+
+                }, 1000);
+            }
+
+        }
+
+
+        function playerHitPiece1() {
+
+            texte1.visible = true;
+            isPlayerMovable = false;
+            powerup1 = true
+            setTimeout(() => {
+                texte1.visible = false;
+                isPlayerMovable = true;
+                counterPiece
+            }, 5000);
+
+
+        }
+
+        function playerHitPiece2() {
+
+            powerup2 = true
+            return
+            setTimeout(() => {
+                texte2.visible = false;
+                isPlayerMovable = true;
+            }, 5000);
+
+
+        }
+
+        function playerHitPiece3() {
+
+            texte3.visible = true;
+            isPlayerMovable = false;
+            powerup3 = true
+            setTimeout(() => {
+                texte3.visible = false;
+                isPlayerMovable = true;
+                counterPiece
+            }, 5000);
+
+
+        }
 
 
 

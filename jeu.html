@@ -33,7 +33,7 @@
 
         var config = {
             type: Phaser.AUTO,
-           // width: 1600, height: 1600,
+            // width: 1600, height: 1600,
             width: 600, height: 500,
             physics: {
                 default: 'arcade',
@@ -103,7 +103,7 @@
         ennemiVivant2 = true;
         powerup1 = false;
         powerup2 = false;
-        powerup3 = false;        
+        powerup3 = false;
         add1 = false;
         add2 = false;
         add3 = false;
@@ -129,6 +129,7 @@
                 tileset
             );
 
+            //il s'appelle calque pic mais c'est surtout celui avec la lave
             const calque_pics1 = carteDuNiveau.createLayer(
                 "pic1",
                 tileset
@@ -139,7 +140,7 @@
                 tileset
             );
 
-            
+
             const calque_pics3 = carteDuNiveau.createLayer(
                 "pic3",
                 tileset
@@ -153,12 +154,15 @@
 
 
             calque_plateformes.setCollisionByProperty({ EstSolide: true });
+            //calque_pics1.setCollisionByProperty({ EstLave: true });
 
 
 
 
-
-
+            //activation manette
+            this.input.gamepad.once('connected', function (pad) {
+                controller = pad;
+            });
 
 
 
@@ -173,6 +177,7 @@
             this.player.setScale(0.8);
             this.player.setCollideWorldBounds(true);
             this.physics.add.collider(this.player, calque_plateformes);
+            this.physics.add.collider(this.player, calque_pics1, hitS);
 
 
 
@@ -182,11 +187,11 @@
             ui = this.add.image(this.player.x - 128 - 110, 62, 'ui')
             ui.setScrollFactor(0);
             ui.setScale(0.35);
-            ui.depth = 1;
+            ui.depth = 2;
 
             redbar = this.add.image(this.player.x - 350, 36, 'redbar')
             redbar.setScrollFactor(0);
-
+            redbar.depth = 1
 
             //ajout des pieces
 
@@ -237,8 +242,8 @@
 
 
 
-            comptPiece = this.add.text(this.player.x - 250 - 75, 60, '0', { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif',fontSize:45 });
-            comptPiece.depth=4
+            comptPiece = this.add.text(this.player.x - 250 - 75, 60, '0', { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif', fontSize: 45 });
+            comptPiece.depth = 4
             comptPiece.setScrollFactor(0);
 
 
@@ -370,7 +375,7 @@
                 this.spike2_2.body.allowGravity = false;
                 this.spike2_3.body.allowGravity = false;
                 this.spike2_4.body.allowGravity = false;
-              //  this.spike2_5.body.allowGravity = false;
+                //  this.spike2_5.body.allowGravity = false;
                 this.spike2_6.body.allowGravity = false;
                 this.spike2_7.body.allowGravity = false;
                 //this.spike2_8.body.allowGravity = false;
@@ -387,7 +392,7 @@
                 this.spike2_2.body.immovable = true;
                 this.spike2_3.body.immovable = true;
                 this.spike2_4.body.immovable = true;
-             //   this.spike2_5.body.immovable = true;
+                //   this.spike2_5.body.immovable = true;
                 this.spike2_6.body.immovable = true;
                 this.spike2_7.body.immovable = true;
                 // this.spike2_8.body.immovable = true;
@@ -405,7 +410,7 @@
                 this.physics.add.collider(this.player, this.spike2_2, playerHit2);
                 this.physics.add.collider(this.player, this.spike2_3, playerHit2);
                 this.physics.add.collider(this.player, this.spike2_4, playerHit2);
-               // this.physics.add.collider(this.player, this.spike2_5, playerHit2);
+                // this.physics.add.collider(this.player, this.spike2_5, playerHit2);
                 this.physics.add.collider(this.player, this.spike2_6, playerHit2);
                 this.physics.add.collider(this.player, this.spike2_7, playerHit2);
                 //  this.physics.add.collider(this.player, this.spike2_8, playerHit1);
@@ -437,21 +442,21 @@
                 this.spike3_9 = this.physics.add.sprite(816 - 160, 208 + 128 + 96, 'pics3_bas');
                 this.spike3_10 = this.physics.add.sprite(816 - 192, 208 + 128 + 96, 'pics3_bas');
                 this.spike3_11 = this.physics.add.sprite(816 - 192 - 32, 208 + 128 + 96, 'pics3_bas');
-               // this.spike3_12 = this.physics.add.sprite(816 - 192 - 64, 208 + 128 + 96, 'pics3_bas');
+                // this.spike3_12 = this.physics.add.sprite(816 - 192 - 64, 208 + 128 + 96, 'pics3_bas');
                 this.spike3_13 = this.physics.add.sprite(812 - 192 - 32 - 124 - 32, 208 + 128 + 96, 'pics3_bas');
                 //this.spike3_14 = this.physics.add.sprite(812-192-64-124-32, 208 + 128 +96, 'pics3_bas');
-                this.spike3_15 = this.physics.add.sprite(1136-96, 208 + 128 +96, 'pics3_gauche');
-                this.spike3_16 = this.physics.add.sprite(1136-96, 208 + 128 +96+32, 'pics3_gauche');                
-                this.spike3_17 = this.physics.add.sprite(1136-96, 208 + 128 +96+64, 'pics3_gauche');
-                this.spike3_18 = this.physics.add.sprite(1136-96, 208 + 128 +96+32+64, 'pics3_gauche');
-                this.spike3_19 = this.physics.add.sprite(1136-96, 208 + 128 +96+128, 'pics3_gauche');
-                this.spike3_20 = this.physics.add.sprite(1136-96, 208 + 128 +96+32+128, 'pics3_gauche');                
-                this.spike3_21 = this.physics.add.sprite(1136-96, 208 + 128 +96+64+128, 'pics3_gauche');
-                this.spike3_22 = this.physics.add.sprite(1136-96, 208 + 128 +96+32+64+128, 'pics3_gauche');
-                this.spike3_23 = this.physics.add.sprite(1136-96-64, 208 + 128 +96+32+128, 'pics3_droite');                
-                this.spike3_24 = this.physics.add.sprite(1136-96-64, 208 + 128 +96+64+128, 'pics3_droite');
-                this.spike3_25 = this.physics.add.sprite(1136-96-64, 208 + 128 +96+32+64+128, 'pics3_droite');
-                this.spike3_26 = this.physics.add.sprite(1136-96-64, 208 + 128 +96+128+128, 'pics3_droite');
+                this.spike3_15 = this.physics.add.sprite(1136 - 96, 208 + 128 + 96, 'pics3_gauche');
+                this.spike3_16 = this.physics.add.sprite(1136 - 96, 208 + 128 + 96 + 32, 'pics3_gauche');
+                this.spike3_17 = this.physics.add.sprite(1136 - 96, 208 + 128 + 96 + 64, 'pics3_gauche');
+                this.spike3_18 = this.physics.add.sprite(1136 - 96, 208 + 128 + 96 + 32 + 64, 'pics3_gauche');
+                this.spike3_19 = this.physics.add.sprite(1136 - 96, 208 + 128 + 96 + 128, 'pics3_gauche');
+                this.spike3_20 = this.physics.add.sprite(1136 - 96, 208 + 128 + 96 + 32 + 128, 'pics3_gauche');
+                this.spike3_21 = this.physics.add.sprite(1136 - 96, 208 + 128 + 96 + 64 + 128, 'pics3_gauche');
+                this.spike3_22 = this.physics.add.sprite(1136 - 96, 208 + 128 + 96 + 32 + 64 + 128, 'pics3_gauche');
+                this.spike3_23 = this.physics.add.sprite(1136 - 96 - 64, 208 + 128 + 96 + 32 + 128, 'pics3_droite');
+                this.spike3_24 = this.physics.add.sprite(1136 - 96 - 64, 208 + 128 + 96 + 64 + 128, 'pics3_droite');
+                this.spike3_25 = this.physics.add.sprite(1136 - 96 - 64, 208 + 128 + 96 + 32 + 64 + 128, 'pics3_droite');
+                this.spike3_26 = this.physics.add.sprite(1136 - 96 - 64, 208 + 128 + 96 + 128 + 128, 'pics3_droite');
 
 
 
@@ -468,7 +473,7 @@
                 this.spike3_11.body.allowGravity = false;
                 //this.spike3_12.body.allowGravity = false;
                 this.spike3_13.body.allowGravity = false;
-               // this.spike3_14.body.allowGravity = false;
+                // this.spike3_14.body.allowGravity = false;
                 this.spike3_15.body.allowGravity = false;
                 this.spike3_16.body.allowGravity = false;
                 this.spike3_17.body.allowGravity = false;
@@ -493,9 +498,9 @@
                 this.spike3_9.body.immovable = true;
                 this.spike3_10.body.immovable = true;
                 this.spike3_11.body.immovable = true;
-             //   this.spike3_12.body.immovable = true;
+                //   this.spike3_12.body.immovable = true;
                 this.spike3_13.body.immovable = true;
-               // this.spike3_14.body.immovable = true;
+                // this.spike3_14.body.immovable = true;
                 this.spike3_15.body.immovable = true;
                 this.spike3_16.body.immovable = true;
                 this.spike3_17.body.immovable = true;
@@ -503,7 +508,7 @@
                 this.spike3_19.body.immovable = true;
                 this.spike3_20.body.immovable = true;
                 this.spike3_21.body.immovable = true;
-                this.spike3_22.body.immovable = true;                
+                this.spike3_22.body.immovable = true;
                 this.spike3_23.body.immovable = true;
                 this.spike3_24.body.immovable = true;
                 this.spike3_25.body.immovable = true;
@@ -520,9 +525,9 @@
                 this.physics.add.collider(this.player, this.spike3_9, playerHit3);
                 this.physics.add.collider(this.player, this.spike3_10, playerHit3);
                 this.physics.add.collider(this.player, this.spike3_11, playerHit3);
-             //   this.physics.add.collider(this.player, this.spike3_12, playerHit3);
+                //   this.physics.add.collider(this.player, this.spike3_12, playerHit3);
                 this.physics.add.collider(this.player, this.spike3_13, playerHit3);
-             //   this.physics.add.collider(this.player, this.spike3_14, playerHit1);
+                //   this.physics.add.collider(this.player, this.spike3_14, playerHit1);
                 this.physics.add.collider(this.player, this.spike3_15, playerHit3);
                 this.physics.add.collider(this.player, this.spike3_16, playerHit3);
                 this.physics.add.collider(this.player, this.spike3_17, playerHit3);
@@ -530,7 +535,7 @@
                 this.physics.add.collider(this.player, this.spike3_19, playerHit3);
                 this.physics.add.collider(this.player, this.spike3_20, playerHit3);
                 this.physics.add.collider(this.player, this.spike3_21, playerHit3);
-                this.physics.add.collider(this.player, this.spike3_22, playerHit3);                
+                this.physics.add.collider(this.player, this.spike3_22, playerHit3);
                 this.physics.add.collider(this.player, this.spike3_23, playerHit3);
                 this.physics.add.collider(this.player, this.spike3_24, playerHit3);
                 this.physics.add.collider(this.player, this.spike3_25, playerHit3);
@@ -648,10 +653,10 @@
 
             //destruction des pieces quand recup
             if (powerup1) {
-                
+
                 this.piece1.setActive(false).setVisible(false);
-                if(!add1){
-                    add1=true
+                if (!add1) {
+                    add1 = true
                     counterPiece++
 
                 }
@@ -659,27 +664,27 @@
             }
             if (powerup2) {
                 this.piece2.setActive(false).setVisible(false);
-                if(!add2){
-                    add2=true
+                if (!add2) {
+                    add2 = true
                     counterPiece++
 
                 }
             }
             if (powerup3) {
                 this.piece3.setActive(false).setVisible(false);
-                if(!add3){
-                    add3=true
+                if (!add3) {
+                    add3 = true
                     counterPiece++
 
                 }
             }
 
 
-
+            //update du compteur de pièces
             comptPiece.setText(counterPiece)
 
 
-
+            //déplacements des ennemis qui bougent
             if (ennemiVivant) {
                 if (this.serpent.body.blocked.left) {
                     this.serpent.setVelocityX(50);
@@ -712,8 +717,9 @@
             }
 
 
+
+            //affichage message game over 
             if (gameOver) {
-                //affichage message game over 
                 texteG.visible = true;
                 texteG.immovable = true;
                 texteG.x = this.player.x;
@@ -723,7 +729,8 @@
                 return;
             }
 
-            if(powerup1 && powerup2 && powerup3){
+            //affichage message victoire
+            if (powerup1 && powerup2 && powerup3) {
                 texteV.visible = true;
                 texteV.immovable = true;
                 texteV.x = this.player.x;
@@ -737,20 +744,23 @@
 
 
             //lancement du fouet
-            this.input.on('pointerdown', (pointer) => {
-                this.fouet.setActive(true)
-                this.fouet.x = this.player.x
-                this.fouet.y = this.player.y
-                if (pointer.x < 400) {
+            if (powerup1) {
+                this.input.on('pointerdown', (pointer) => {
+                    this.fouet.setActive(true)
+                    this.fouet.x = this.player.x
+                    this.fouet.y = this.player.y
+                    if (pointer.x < 400) {
 
-                    this.fouet.setVelocityX(-150)
+                        this.fouet.setVelocityX(-150)
 
-                }
-                else {
-                    this.fouet.setVelocityX(150)
+                    }
+                    else {
+                        this.fouet.setVelocityX(150)
 
-                }
-            });
+                    }
+                });
+            }
+
             //anim du fouet
             this.fouet.setAngle(this.fouet.x)
 
@@ -763,7 +773,7 @@
 
                 this.player.setVelocityX(-160); //alors vitesse négative en X
                 this.player.anims.play('left', true); //et animation => gauche
-
+                this.player.tint =0xffffff;
 
 
             }
@@ -873,7 +883,7 @@
             if (!vieModifiee) {
                 vie--
                 console.log(vie)
-
+                
                 redbar.x = redbar.x - 21;
 
                 if (vie <= 0) {
@@ -947,25 +957,13 @@
 
         function playerHitS() {
             if (!vieModifiee) {
-                vie = vie - 2
+                vie = vie - 10
                 console.log(vie)
-
-                redbar.x = redbar.x - 42;
-
-                if (vie <= 0) {
-                    console.log("mort")
+                gameOver = true;
 
 
-                    gameOver = true;
-                }
 
 
-                //inserer anim frames invincibilité
-                vieModifiee = true;
-                setTimeout(() => {
-                    vieModifiee = false;
-
-                }, 1000);
             }
 
         }
@@ -978,7 +976,7 @@
             setTimeout(() => {
                 texte1.visible = false;
                 isPlayerMovable = true;
-                
+
             }, 5000);
 
 
@@ -996,7 +994,7 @@
         }
 
         function playerHitPiece3() {
-           //    texte3.visible = true;
+            //    texte3.visible = true;
             powerup3 = true
 
 
@@ -1004,18 +1002,18 @@
 
 
         function destroySerpent() {
-            ennemiVivant=false
+            ennemiVivant = false
 
-         
+
 
 
         }
 
 
         function destroySerpent2() {
-            ennemiVivant2=false
+            ennemiVivant2 = false
 
-         
+
 
 
         }

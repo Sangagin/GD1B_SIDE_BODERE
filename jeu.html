@@ -94,6 +94,7 @@
         var cursors;
         var gameOver;
         var counter = 0;
+        var player;
         gameOver = false;
         this.sens = 1;
         wallJump = true;
@@ -749,7 +750,7 @@
                     this.fouet.setActive(true)
                     this.fouet.x = this.player.x
                     this.fouet.y = this.player.y
-                    if (pointer.x < 400) {
+                    if (pointer.x < 300) {
 
                         this.fouet.setVelocityX(-150)
 
@@ -765,7 +766,15 @@
             this.fouet.setAngle(this.fouet.x)
 
 
+            if(vieModifiee){
+                this.player.setTint(0xff0000);
 
+
+            }else{
+                this.player.setTint();
+
+            }
+            
 
             //touches de controle
 
@@ -773,7 +782,6 @@
 
                 this.player.setVelocityX(-160); //alors vitesse négative en X
                 this.player.anims.play('left', true); //et animation => gauche
-                this.player.tint =0xffffff;
 
 
             }
@@ -794,6 +802,7 @@
             else if (cursors.right.isDown && !this.onWallDroit && !walljump && isPlayerMovable) { //sinon si la touche droite est appuyée
                 this.player.setVelocityX(160); //alors vitesse positive en X
                 this.player.anims.play('right', true); //et animation => droite
+
             }
 
 
@@ -820,12 +829,6 @@
             }, 3000);
 
 
-            //lien anim https://stackabuse.com/phaser-3-and-tiled-building-a-platformer/
-
-            //https://gamedevacademy.org/phaser-texture-atlas-tutorial-how-to-make-awesome-sprites-from-scratch/
-
-            //https://www.codeandweb.com/texturepacker/tutorials/creating-spritesheets-for-phaser-with-texturepacker#:~:text=What%20you%20are%20going%20to%20learn%201%20Creating,this%20new%20function%20to%20create%20the%20scene%3A%20
-            //https://www.youtube.com/watch?time_continue=1&v=uMBfAhp244w&embeds_euri=https%3A%2F%2Fwww.bing.com%2F&embeds_origin=https%3A%2F%2Fwww.bing.com&source_ve_path=MjM4NTE&feature=emb_title
 
             if (cursors.up.isDown && this.player.body.blocked.down && isPlayerMovable) {
                 //si touche haut appuyée ET que le perso touche le sol
@@ -883,7 +886,7 @@
             if (!vieModifiee) {
                 vie--
                 console.log(vie)
-                
+                degat=true;
                 redbar.x = redbar.x - 21;
 
                 if (vie <= 0) {
@@ -898,7 +901,6 @@
                 vieModifiee = true;
                 setTimeout(() => {
                     vieModifiee = false;
-
                 }, 1000);
             }
 
@@ -949,7 +951,6 @@
                 vieModifiee = true;
                 setTimeout(() => {
                     vieModifiee = false;
-
                 }, 1000);
             }
 

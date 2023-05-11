@@ -569,7 +569,7 @@
 
             this.serpent2 = this.physics.add.sprite(200, 10, 'serpent');
 
-            this.physics.add.collider(this.serpent2, calque_plateformes);
+            //this.physics.add.collider(this.serpent2, calque_plateformes);
             this.serpent2.setScale(0.04);
             this.serpent2.setVelocityX(50);
 
@@ -710,7 +710,7 @@
             comptPiece.setText(counterPiece)
 
 
-            /*
+            
             //déplacements des ennemis qui bougent
             if (ennemiVivant) {
                 if (this.serpent.body.blocked.left) {
@@ -767,7 +767,7 @@
                 return;
             }
 
-*/
+
 
 
             //lancement du fouet
@@ -1017,15 +1017,7 @@
         }
 
         function playerHitS() {
-            if (!vieModifiee) {
-                vie = vie - 10
-                console.log(vie)
-                gameOver = true;
-
-
-
-
-            }
+            console.log("touche")
 
         }
 

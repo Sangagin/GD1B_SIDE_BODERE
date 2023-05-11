@@ -662,8 +662,8 @@
 
             if (this.keySpace.isDown){
                 this.player.body.allowGravity = false;
-                
-               this.player.body.y=this.player.body.y-1
+                this.player.body.velocity.y=-10
+               this.player.body.y=this.player.body.y-2
             }
             else {
                 this.player.body.allowGravity = true;
